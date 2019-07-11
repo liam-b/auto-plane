@@ -1,7 +1,7 @@
 const pwm = require('./pwm.js')
 
-const MIN_DUTY_CYCLE = 5
-const MAX_DUTY_CYCLE = 12
+const MIN_DUTY_CYCLE = 2
+const MAX_DUTY_CYCLE = 13
 
 module.exports = class {
   constructor(pwmHat, channel) {
