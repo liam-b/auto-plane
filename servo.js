@@ -18,8 +18,7 @@ module.exports = class {
   updatePosition(newPosition) {
     this.position = newPosition
 
-    let position = newPosition * ((MAX_DUTY_CYCLE - MIN_DUTY_CYCLE) / 2 / 100)
-    position += (MIN_DUTY_CYCLE + MAX_DUTY_CYCLE) / 2
-    this.pwmDevice.dutyCycle = Math.max(MIN_DUTY_CYCLE, Math.min(Math.abs(speed), MAX_DUTY_CYCLE))
+    let position = (((newPosition + 100) * (MAX_DUTY_CYCLE - MIN_DUTY_CYCLE)) / 200) + MIN_DUTY_CYCLE
+    this.pwmDevice.dutyCycle = Math.max(MIN_DUTY_CYCLE, Math.min(Math.abs(position), MAX_DUTY_CYCLE))
   }
 }
