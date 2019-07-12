@@ -1,0 +1,2 @@
+screen /dev/ttyUSB0 57600 8N1
+screen /dev/tty.SLAB_USBtoUART 57600 8N1

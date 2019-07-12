@@ -5,7 +5,11 @@ const Esc = require('./esc.js')
 const Servo = require('./servo.js')
 
 raspi.init(() => {
-  var serial = new Serial()
+  var serial = new Serial({
+    portId: "/dev/ttyUSB0",
+    baudRate: 57600
+  })
+  
   serial.open(() => {
     serial.on('data', (data) => {
       process.stdout.write(data)
