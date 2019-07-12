@@ -12,7 +12,7 @@ raspi.init(() => {
   
   serial.open(() => {
     serial.on('data', (data) => {
-      process.stdout.write(data)
+      console.log(data)
     })
 
     serial.write('Hello from raspi-serial')
