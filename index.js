@@ -1,27 +1,24 @@
 const raspi = require('raspi')
-const Serial = require('raspi-serial').Serial
+const serial = require('./serial.js')
 const pwm = require('./pwm.js')
 const Esc = require('./esc.js')
 const Servo = require('./servo.js')
 
-raspi.init(() => {
-  var serial = new Serial({
-    portId: "/dev/ttyUSB0",
-    baudRate: 57600
-  })
-  
-  serial.open(() => {
-    serial.on('data', (data) => {
-      console.log('got: \'' + data + '\'')
-    })
+const bot = {}
+var serial
 
-    serial.write('Hello from raspi-serial')
-  })
-  
-  const pwmHat = new pwm.Hat(60)
-  const esc = new Esc(pwmHat, 0)
-  const servo = new Servo(pwmHat, 1)
+raspi.init(async () => {
+  serial = await serial.init()
+  bot.pwmHat = new pwm.Hat(60)
+  bot.esc = new Esc(pwmHat, 0)
+  bot.servo = new Servo(pwmHat, 1)
 
-  esc.setSpeed(0)
-  servo.rotateTo(100)
+  loop()
 })
+
+async function loop() {
+  let res = await serial.response(1000)
+  if (res.command == 'ping') serial.send('pong')
+
+  loop()
+}
