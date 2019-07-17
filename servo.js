@@ -8,17 +8,17 @@ module.exports = class {
     this.pwmDevice = new pwm.Device(pwmHat, channel)
     this.position = 0
 
-    this.updatePosition(this.position)
+    this.setPosition(this.position)
   }
 
-  rotateTo(position) {
-    this.updatePosition(position)
-  }
-
-  updatePosition(newPosition) {
+  setPosition(newPosition) {
     this.position = newPosition
 
     let position = (((newPosition + 100) * (MAX_DUTY_CYCLE - MIN_DUTY_CYCLE)) / 200) + MIN_DUTY_CYCLE
     this.pwmDevice.dutyCycle = Math.max(MIN_DUTY_CYCLE, Math.min(Math.abs(position), MAX_DUTY_CYCLE))
+  }
+
+  recenter() {
+    this.setPosition(0)
   }
 }

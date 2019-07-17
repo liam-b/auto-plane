@@ -6,5 +6,10 @@ module.exports.serialize = (command, data) => {
 }
 
 module.exports.deserialize = (json) => {
-  return JSON.parse(json)
+  try {
+    return JSON.parse(json)
+  } catch (error) {
+    console.error('bad json')
+    return null
+  }
 }

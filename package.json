@@ -17,8 +17,8 @@
   },
   "homepage": "https://github.com/liam-b/auto-plane#readme",
   "dependencies": {
-    "raspi": "^6.0.1",
-    "raspi-i2c": "^6.2.2",
-    "raspi-serial": "^5.1.1"
+    "serialport": "^7.1.5",
+    "i2c-bus": "^4.0.10",
+    "@serialport/parser-inter-byte-timeout": "^1.1.0"
   }
 }

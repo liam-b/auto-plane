@@ -1,26 +1,49 @@
-const Serial = require('raspi-serial').Serial
-const Command = require('./command.js')
+const serialport = require('serialport')
+const Delimiter = require('@serialport/parser-delimiter')
+const command = require('./command.js')
 const sleep = require('util').promisify(setTimeout)
 
-var serial
-module.exports.init = () => {
-  serial = new Serial({
-    portId: "/dev/ttyUSB0",
-    baudRate: 57600
-  })
+const SERIAL_CHECK_INTERVAL = 5
+
+var lastSerialCommand = null
+const port = new serialport('/dev/ttyUSB0', {
+  baudRate: 57600
+}, (err) => {
+  if (err) throw 'Failed to open serial port'
+})
+
+const parser = port.pipe(new Delimiter({ delimiter: '\n' }))
+parser.on('data', (data) => {
+  lastSerialCommand = command.deserialize(data)
+})
+
+module.exports.send = async (name, data) => {
+  await port.write(command.serialize(name, data) + '\n')
+  // return await port.drain()
 }
 
-module.exports.send = (name, data) => {
-  port.write(command.serialize(name, data))
+module.exports.read = () => {
+  let value = lastSerialCommand
+  lastSerialCommand = null
+  return value
 }
 
-module.exports.response = (timeout) => {
-  return new Promise(resolve => {
-    let callback = response => resolve(command.deserialize(response))
-    port.once('data', callback)
-    sleep(timeout).then(() => {
-      port.removeListener('data', callback)
-      resolve()
-    })
-  })
+module.exports.response = async (timeout) => {
+  const checks = timeout / SERIAL_CHECK_INTERVAL
+  let counter = 0
+  while (counter <= checks) {
+    await sleep(SERIAL_CHECK_INTERVAL)
+    if (lastSerialCommand) {
+      let value = lastSerialCommand
+      lastSerialCommand = null
+      return value
+    }
+    
+    counter += 1
+  }
+  return null
+}
+
+module.exports.flush = () => {
+  lastSerialCommand = null
 }

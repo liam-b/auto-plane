@@ -1,10 +1,5 @@
-const raspi = require('raspi')
-const I2C = require('raspi-i2c').I2C
-
-var i2c
-raspi.init(() => {
-  i2c = new I2C()
-})
+const i2c = require('i2c-bus')
+const bus = i2c.openSync(1)
 
 module.exports.Device = class {
   constructor(address) {
@@ -12,10 +7,10 @@ module.exports.Device = class {
   }
 
   write(register, data) {
-    i2c.writeByteSync(this.address, register, data)
+    bus.writeByteSync(this.address, register, data)
   }
 
   read(register) {
-    return i2c.readByteSync(this.address, register)
+    return bus.readByteSync(this.address, register)
   }
 }
